@@ -3,15 +3,22 @@ package flappy.drunk;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.os.Bundle;
-import android.app.Activity;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class GameView extends SurfaceView implements Runnable {
+public class GameView extends SurfaceView implements Runnable  {
+    //GestureDetector.OnGestureListener
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
     //Boolean to track if the game is playing or not
     volatile boolean playing;
+
+    //GestureDetector
+    GestureDetector gestureDetector;
 
     //Game thread
     private Thread gameThread = null;
@@ -25,15 +32,18 @@ public class GameView extends SurfaceView implements Runnable {
     private SurfaceHolder surfaceHolder;
 
     //Constructor
-    public GameView(Context context) {
+    public GameView(Context context, int screenX, int screenY) {
         super(context);
 
         //Init player
-        player = new Player(context);
+        player = new Player(context, screenX, screenY);
 
         //Init drawing objects
         surfaceHolder = getHolder();
         paint = new Paint();
+
+        //Init gesture detector
+        //gestureDetector = new GestureDetector(context,this);
     }
 
     @Override
@@ -69,7 +79,7 @@ public class GameView extends SurfaceView implements Runnable {
     //This method will control the frames per seconds drawn. Here we are calling the delay method of Thread. And this is actually making our frame rate to aroud 60fps.
     private void control() {
         try {
-            gameThread.sleep(17);
+            gameThread.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -89,4 +99,80 @@ public class GameView extends SurfaceView implements Runnable {
         gameThread = new Thread(this);
         gameThread.start();
     }
+
+    //*******************
+    //Movement
+    //*******************
+
+    public void onLeftSwipe() {
+        player.setUserMoving();
+    }
+
+    public void onRightSwipe() {
+        player.setUserMoving();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_UP:
+                player.stopUserMoving();
+                break;
+            case MotionEvent.ACTION_DOWN:
+                player.setUserMoving();
+                break;
+        }
+        //gestureDetector.onTouchEvent(motionEvent);
+        return true;
+    }
+    /*
+    @Override
+    public boolean onFling(MotionEvent first_down_motionEvent, MotionEvent last_move_motionEvent, float velocity_x, float velocity_y) {
+        try {
+            if (Math.abs(first_down_motionEvent.getY() - last_move_motionEvent.getY()) > SWIPE_MAX_OFF_PATH){
+                return false;
+            }
+            // right to left swipe
+            if (first_down_motionEvent.getX() - last_move_motionEvent.getX() > SWIPE_MIN_DISTANCE
+                    && Math.abs(velocity_x) > SWIPE_THRESHOLD_VELOCITY) {
+                onLeftSwipe();
+            }
+            // left to right swipe
+            else if (last_move_motionEvent.getX() - first_down_motionEvent.getX() > SWIPE_MIN_DISTANCE
+                    && Math.abs(velocity_x) > SWIPE_THRESHOLD_VELOCITY) {
+                onRightSwipe();
+            }
+        }catch (Exception e){
+
+        }
+        //invalidate();
+        return false;
+    }
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
+    }
+    */
+
 }
