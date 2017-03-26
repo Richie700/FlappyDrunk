@@ -9,7 +9,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
@@ -33,8 +34,11 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
     //Object for drawing
     private Paint paint;
-    private Canvas canvas;
+    public Canvas canvas;
     private SurfaceHolder surfaceHolder;
+
+    //Dirt list
+    private ArrayList <Dirt> dirts = new ArrayList<Dirt>();
 
     //Constructor
     public GameView(Context context, int screenX, int screenY) {
@@ -46,6 +50,13 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
         //Init drawing objects
         surfaceHolder = getHolder();
         paint = new Paint();
+
+        //Adding 100 dirt
+        int dirtNumber = 100;
+        for (int i = 0; i < dirtNumber; i++) {
+            Dirt d = new Dirt(screenX,screenY);
+            dirts.add(d);
+        }
 
         //Init gesture detector
         gestureDetector = new GestureDetector(context,this);
@@ -68,6 +79,10 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
     private void update() {
         //Updating player position
         player.update();
+
+        for (Dirt d: dirts) {
+            d.update();
+        }
     }
     //Here we will draw the characters to the canvas.
     private void draw() {
@@ -76,6 +91,13 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
             //Locking canvas
             canvas = surfaceHolder.lockCanvas();
             canvas.drawColor(Color.GRAY);
+            //Setting the paint color to light gray to draw the dirt
+            paint.setColor(Color.LTGRAY);
+            //Drawing dirt
+            for (Dirt d : dirts) {
+                paint.setStrokeWidth(d.getDirthWidth());
+                canvas.drawPoint(d.getX(),d.getY(),paint);
+            }
             //Drawing the player
             canvas.drawBitmap(player.getBitmap(), player.getX(),player.getY(), paint);
             //Unlocking the canvas
@@ -97,6 +119,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
         try {
             gameThread.join();
         }catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -140,7 +163,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
             else if (last_move_motionEvent.getX() - first_down_motionEvent.getX() > SWIPE_MIN_DISTANCE
                     && Math.abs(velocity_x) > SWIPE_THRESHOLD_VELOCITY) {
                 onRightSwipe();
-                Log.d(TAG,"RighSwipe");
+                Log.d(TAG,"RightSwipe");
             }
         }catch (Exception e){
 
@@ -173,5 +196,5 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
     }
 
-
 }
+

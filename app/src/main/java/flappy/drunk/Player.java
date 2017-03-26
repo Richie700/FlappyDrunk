@@ -4,10 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-/**
- * Created by Jykke on 25.3.2017.
- */
-
 public class Player {
 
     private Bitmap bitmap;
