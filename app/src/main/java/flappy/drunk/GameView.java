@@ -2,13 +2,18 @@ package flappy.drunk;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
-public class GameView extends SurfaceView implements Runnable  {
+import static android.content.ContentValues.TAG;
+
+public class GameView extends SurfaceView implements Runnable,GestureDetector.OnGestureListener  {
     //GestureDetector.OnGestureListener
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -43,7 +48,7 @@ public class GameView extends SurfaceView implements Runnable  {
         paint = new Paint();
 
         //Init gesture detector
-        //gestureDetector = new GestureDetector(context,this);
+        gestureDetector = new GestureDetector(context,this);
     }
 
     @Override
@@ -70,6 +75,7 @@ public class GameView extends SurfaceView implements Runnable  {
         if (surfaceHolder.getSurface().isValid()) {
             //Locking canvas
             canvas = surfaceHolder.lockCanvas();
+            canvas.drawColor(Color.GRAY);
             //Drawing the player
             canvas.drawBitmap(player.getBitmap(), player.getX(),player.getY(), paint);
             //Unlocking the canvas
@@ -79,7 +85,7 @@ public class GameView extends SurfaceView implements Runnable  {
     //This method will control the frames per seconds drawn. Here we are calling the delay method of Thread. And this is actually making our frame rate to aroud 60fps.
     private void control() {
         try {
-            gameThread.sleep(1);
+            gameThread.sleep(17);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -105,27 +111,19 @@ public class GameView extends SurfaceView implements Runnable  {
     //*******************
 
     public void onLeftSwipe() {
-        player.setUserMoving();
+       player.userMovingLeft();
     }
 
     public void onRightSwipe() {
-        player.setUserMoving();
+        player.userMovingRight();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_UP:
-                player.stopUserMoving();
-                break;
-            case MotionEvent.ACTION_DOWN:
-                player.setUserMoving();
-                break;
-        }
-        //gestureDetector.onTouchEvent(motionEvent);
+        gestureDetector.onTouchEvent(motionEvent);
         return true;
     }
-    /*
+
     @Override
     public boolean onFling(MotionEvent first_down_motionEvent, MotionEvent last_move_motionEvent, float velocity_x, float velocity_y) {
         try {
@@ -136,16 +134,17 @@ public class GameView extends SurfaceView implements Runnable  {
             if (first_down_motionEvent.getX() - last_move_motionEvent.getX() > SWIPE_MIN_DISTANCE
                     && Math.abs(velocity_x) > SWIPE_THRESHOLD_VELOCITY) {
                 onLeftSwipe();
+                Log.d(TAG,"LeftSwipe");
             }
             // left to right swipe
             else if (last_move_motionEvent.getX() - first_down_motionEvent.getX() > SWIPE_MIN_DISTANCE
                     && Math.abs(velocity_x) > SWIPE_THRESHOLD_VELOCITY) {
                 onRightSwipe();
+                Log.d(TAG,"RighSwipe");
             }
         }catch (Exception e){
 
         }
-        //invalidate();
         return false;
     }
 
@@ -173,6 +172,6 @@ public class GameView extends SurfaceView implements Runnable  {
     public void onLongPress(MotionEvent motionEvent) {
 
     }
-    */
+
 
 }
