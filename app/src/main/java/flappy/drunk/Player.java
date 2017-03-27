@@ -32,12 +32,13 @@ public class Player {
 
     //Constructor
     public Player(Context context, int screenX, int screenY) {
-        x = 450;
-        y = 1150;
+        //Player position and speed
+        x = screenX / 2 - 43;
+        y = screenY - 400;
         speed = 0;
 
         //Bitmap from drawable resource
-        bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.player_back);
+        bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.survivor1_stand);
 
         //Calculating maxX
         maxX = screenX - bitmap.getWidth();

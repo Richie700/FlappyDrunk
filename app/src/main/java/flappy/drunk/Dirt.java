@@ -5,7 +5,7 @@ import java.util.Random;
 public class Dirt {
     private int x;
     private int y;
-    private int speed = 1;
+    private int speed = 3;
 
     private int minY;
     private int maxY;
@@ -19,7 +19,6 @@ public class Dirt {
         minX = 0;
         minY = 0;
         Random randomGenerator = new Random();
-        speed = randomGenerator.nextInt(10);
 
         //Generating a random coordinate but keeping the coordinate inside the screen size
         x = randomGenerator.nextInt(maxX);
@@ -35,13 +34,12 @@ public class Dirt {
             y = minY;
             Random randomGenerator = new Random();
             x = randomGenerator.nextInt(maxX);
-            speed = randomGenerator.nextInt(15);
         }
     }
 
     public float getDirthWidth() {
         //Making dirt random
-        float minY = 1.0f;
+        float minY = 2.0f;
         float maxY = 4.0f;
         Random random = new Random();
         float finalY = random.nextFloat() * (maxY - minY) + minY;

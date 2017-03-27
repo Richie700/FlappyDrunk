@@ -20,6 +20,10 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
+    //View height and width
+    int view_width;
+    int view_height;
+
     //Boolean to track if the game is playing or not
     volatile boolean playing;
 
@@ -61,7 +65,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
         //Init gesture detector
         gestureDetector = new GestureDetector(context,this);
     }
-
+    
     @Override
     public void run() {
         while (playing) {
