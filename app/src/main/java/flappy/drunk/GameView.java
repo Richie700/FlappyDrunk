@@ -65,7 +65,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
         //Init gesture detector
         gestureDetector = new GestureDetector(context,this);
     }
-    
+
     @Override
     public void run() {
         while (playing) {
