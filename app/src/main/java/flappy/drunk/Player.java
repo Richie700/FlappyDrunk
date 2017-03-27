@@ -26,7 +26,11 @@ public class Player {
     private int maxX;
     private int minX;
 
+
+    //Test2
+
     //Test
+
 
     //Speed limit
     private final int MIN_SPEED = -15;
