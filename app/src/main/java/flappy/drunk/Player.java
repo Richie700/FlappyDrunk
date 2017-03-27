@@ -25,13 +25,7 @@ public class Player {
     //Controlling X coordinate so that player won't go outside the screen
     private int maxX;
     private int minX;
-
-
-    //Test2
-
-    //Test
-
-
+    
     //Speed limit
     private final int MIN_SPEED = -15;
     private final int MAX_SPEED = 15;
