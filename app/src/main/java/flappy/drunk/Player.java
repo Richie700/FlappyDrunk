@@ -3,6 +3,7 @@ package flappy.drunk;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 public class Player {
 
@@ -30,6 +31,9 @@ public class Player {
     private final int MIN_SPEED = -15;
     private final int MAX_SPEED = 15;
 
+    //Collision detector
+    private Rect detectCollision;
+
     //Constructor
     public Player(Context context, int screenX, int screenY) {
         //Player position and speed
@@ -45,6 +49,9 @@ public class Player {
 
         //Left side x point is 0 so x will always be zero
         minX = 0;
+
+        //Init collision detector
+        detectCollision = new Rect(x,y, bitmap.getWidth(),bitmap.getHeight());
 
     }
 
@@ -83,6 +90,20 @@ public class Player {
         if (x > maxX) {
             x = maxX;
         }
+
+        //Adding the top, left, bottom and right to the rect object
+        detectCollision.left = x;
+        detectCollision.top = y;
+        detectCollision.right = x + bitmap.getWidth();
+        detectCollision.bottom = y + bitmap.getHeight();
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public Rect getDetectCollision() {
+        return detectCollision;
     }
 
     public Bitmap getBitmap() {

@@ -37,20 +37,15 @@ public class Dirt {
         }
     }
 
-    public float getDirthWidth() {
-        //Making dirt random
-        float minY = 2.0f;
-        float maxY = 4.0f;
-        Random random = new Random();
-        float finalY = random.nextFloat() * (maxY - minY) + minY;
-        return finalY;
-    }
-
     public int getX() {
         return x;
     }
 
     public int getY() {
         return y;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 }
