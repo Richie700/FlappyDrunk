@@ -46,8 +46,11 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
     //Object array for cars
     private Car[] cars;
-
     private int carCount = 2;
+
+    //Object array for bottles
+    private Bottle bottle;
+
 
     //Constructor
     public GameView(Context context, int screenX, int screenY) {
@@ -73,6 +76,9 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
             cars[i] = new Car(context,screenX,screenY);
         }
 
+        //Init bottle object
+        bottle = new Bottle(context,screenX,screenY);
+
         //Init gesture detector
         gestureDetector = new GestureDetector(context,this);
     }
@@ -90,9 +96,8 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
             control();
         }
     }
-    //Here we will update the coordinate of our characters.
+    //Here we will update the coordinate of our object.
     private void update() {
-        //Updating player position
         player.update();
 
         for (Dirt d: dirts) {
@@ -102,16 +107,21 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
         for (int i = 0; i < carCount; i++) {
             cars[i].update();
 
-            //If collision between car and player occurs
+            //Collision between car and player
             if (Rect.intersects(player.getDetectCollision(),cars[i].getDetectCollision())) {
                 player.setY(-200);
                 for (Dirt d:dirts) {
                     d.setSpeed(0);
                 }
+                bottle.setSpeed(0);
             }
         }
 
+        bottle.update();
 
+            if (Rect.intersects(player.getDetectCollision(),bottle.getDetectCollision())) {
+                bottle.setX(-500);
+            }
     }
     //Here we will draw the characters to the canvas.
     private void draw() {
@@ -128,11 +138,14 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
                 canvas.drawPoint(d.getX(),d.getY(),paint);
             }
             //Drawing the player
-            canvas.drawBitmap(player.getBitmap(), player.getX(),player.getY(), paint);
+            canvas.drawBitmap(player.getBitmap(), player.getX(), player.getY(), paint);
             //Drawing the cars
             for (int i = 0; i < carCount; i++) {
                 canvas.drawBitmap(cars[i].getBitmap(), cars[i].getX(), cars[i].getY(), paint);
             }
+            //Drawing the bottles
+            canvas.drawBitmap(bottle.getBitmap(), bottle.getX(), bottle.getY(), paint);
+
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas);
         }

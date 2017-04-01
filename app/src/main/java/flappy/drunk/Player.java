@@ -4,6 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.util.Log;
+
+import java.util.Timer;
+
+import static android.content.ContentValues.TAG;
 
 public class Player {
 
@@ -21,15 +26,15 @@ public class Player {
     private boolean movingLeft;
 
     //Gravity Value
-    private final int GRAVITY = 0;
+    private int GRAVITY = 0;
 
     //Controlling X coordinate so that player won't go outside the screen
     private int maxX;
     private int minX;
     
     //Speed limit
-    private final int MIN_SPEED = -15;
-    private final int MAX_SPEED = 15;
+    private final int MIN_SPEED = -7;
+    private final int MAX_SPEED = 7;
 
     //Collision detector
     private Rect detectCollision;
@@ -70,9 +75,12 @@ public class Player {
         if (movingRight) {
             speed += 2;
         }
+
         if (movingLeft) {
             speed -= 2;
         }
+
+        x += speed;
 
         if (speed > MAX_SPEED) {
             speed = MAX_SPEED;
@@ -80,8 +88,6 @@ public class Player {
         if (speed < MIN_SPEED) {
             speed = MIN_SPEED;
         }
-
-        x += speed + GRAVITY;
 
         //Player won't go off the screen
         if (x < minX) {
