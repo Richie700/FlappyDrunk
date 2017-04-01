@@ -3,6 +3,12 @@ package flappy.drunk;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
+import android.util.Log;
+
+import java.util.Timer;
+
+import static android.content.ContentValues.TAG;
 
 public class Player {
 
@@ -20,15 +26,18 @@ public class Player {
     private boolean movingLeft;
 
     //Gravity Value
-    private final int GRAVITY = 0;
+    private int GRAVITY = 0;
 
     //Controlling X coordinate so that player won't go outside the screen
     private int maxX;
     private int minX;
     
     //Speed limit
-    private final int MIN_SPEED = -15;
-    private final int MAX_SPEED = 15;
+    private final int MIN_SPEED = -7;
+    private final int MAX_SPEED = 7;
+
+    //Collision detector
+    private Rect detectCollision;
 
     //Constructor
     public Player(Context context, int screenX, int screenY) {
@@ -45,6 +54,9 @@ public class Player {
 
         //Left side x point is 0 so x will always be zero
         minX = 0;
+
+        //Init collision detector
+        detectCollision = new Rect(x,y, bitmap.getWidth(),bitmap.getHeight());
 
     }
 
@@ -63,9 +75,12 @@ public class Player {
         if (movingRight) {
             speed += 2;
         }
+
         if (movingLeft) {
             speed -= 2;
         }
+
+        x += speed;
 
         if (speed > MAX_SPEED) {
             speed = MAX_SPEED;
@@ -74,8 +89,6 @@ public class Player {
             speed = MIN_SPEED;
         }
 
-        x += speed + GRAVITY;
-
         //Player won't go off the screen
         if (x < minX) {
             x = minX;
@@ -83,6 +96,20 @@ public class Player {
         if (x > maxX) {
             x = maxX;
         }
+
+        //Adding the top, left, bottom and right to the rect object
+        detectCollision.left = x;
+        detectCollision.top = y;
+        detectCollision.right = x + bitmap.getWidth();
+        detectCollision.bottom = y + bitmap.getHeight();
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public Rect getDetectCollision() {
+        return detectCollision;
     }
 
     public Bitmap getBitmap() {
