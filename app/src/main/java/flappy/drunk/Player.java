@@ -33,8 +33,8 @@ public class Player {
     private int minX;
     
     //Speed limit
-    private final int MIN_SPEED = -7;
-    private final int MAX_SPEED = 7;
+    private final int MIN_SPEED = -10;
+    private final int MAX_SPEED = 10;
 
     //Collision detector
     private Rect detectCollision;
@@ -43,7 +43,7 @@ public class Player {
     public Player(Context context, int screenX, int screenY) {
         //Player position and speed
         x = screenX / 2 - 43;
-        y = screenY - 400;
+        y = screenY - 500;
         speed = 0;
 
         //Bitmap from drawable resource
