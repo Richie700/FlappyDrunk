@@ -5,7 +5,7 @@ import java.util.Random;
 public class Dirt {
     private int x;
     private int y;
-    private int speed = 3;
+    private int speed = 6;
 
     private int minY;
     private int maxY;

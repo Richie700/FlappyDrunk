@@ -11,7 +11,7 @@ public class Bottle {
 
     private int x;
     private int y;
-    private int speed = 3;
+    private int speed = 6;
 
     private Bitmap bitmap;
     private Bitmap resizedBitmap;

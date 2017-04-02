@@ -3,6 +3,7 @@ package flappy.drunk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -24,8 +25,13 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
+    Context context;
+
     //Boolean to track if the game is playing or not
     volatile boolean playing;
+
+    //Game over indicator
+    private boolean isGameOver;
 
     //GestureDetector
     GestureDetector gestureDetector;
@@ -51,10 +57,20 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
     //Object array for bottles
     private Bottle bottle;
 
+    //Highscore
+    int score;
+
+    int highScore[] = new int[4];
+
+    //Shared Preferences to store scores
+    SharedPreferences sharedPreferences;
+
 
     //Constructor
     public GameView(Context context, int screenX, int screenY) {
         super(context);
+
+        this.context = context;
 
         //Init player
         player = new Player(context, screenX, screenY);
@@ -81,6 +97,17 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
         //Init gesture detector
         gestureDetector = new GestureDetector(context,this);
+
+        //Init score
+        score = 0;
+        sharedPreferences = context.getSharedPreferences("SHAR_PREF_NAME",Context.MODE_PRIVATE);
+        highScore[0] = sharedPreferences.getInt("score1",0);
+        highScore[1] = sharedPreferences.getInt("score2",0);
+        highScore[2] = sharedPreferences.getInt("score3",0);
+        highScore[3] = sharedPreferences.getInt("score4",0);
+
+        //Init Game Over
+        isGameOver = false;
     }
 
     @Override
@@ -98,6 +125,8 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
     }
     //Here we will update the coordinate of our object.
     private void update() {
+        score++;
+
         player.update();
 
         for (Dirt d: dirts) {
@@ -114,6 +143,22 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
                     d.setSpeed(0);
                 }
                 bottle.setSpeed(0);
+
+                //Storing scores
+                isGameOver = true;
+
+                for (int j = 0; j < 4; j++) {
+                    if (highScore[j] < score) {
+                        highScore[j] = score;
+                        break;
+                    }
+                }
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                for (int j = 0; j < 4; j++) {
+                    int k = j + 1;
+                    editor.putInt("score" + k, highScore[j]);
+                }
+                editor.apply();
             }
         }
 
@@ -145,6 +190,18 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
             }
             //Drawing the bottles
             canvas.drawBitmap(bottle.getBitmap(), bottle.getX(), bottle.getY(), paint);
+
+            //Drawing the score
+            paint.setTextSize(30);
+            canvas.drawText("Score:" + score, 100, 50, paint);
+
+            //Draw Game Over
+            if (isGameOver) {
+                paint.setTextSize(150);
+                paint.setTextAlign(Paint.Align.CENTER);
+                int yPos = (int) ((canvas.getHeight() / 2) - (paint.descent() + paint.ascent() / 2));
+                canvas.drawText("Game Over",canvas.getWidth() / 2, yPos,paint);
+            }
 
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas);
@@ -190,6 +247,12 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         gestureDetector.onTouchEvent(motionEvent);
+
+        if(isGameOver) {
+            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                context.startActivity(new Intent(context,MainActivity.class));
+            }
+        }
         return true;
     }
 

@@ -33,7 +33,7 @@ public class Car {
 
         //Generating a random coordinate but keeping the coordinate inside the screen size
         Random randomGenerator = new Random();
-        speed = randomGenerator.nextInt(5)+5;
+        speed = randomGenerator.nextInt(6)+8;
         y = minY - bitmap.getHeight();
         x = randomGenerator.nextInt(maxX) - bitmap.getWidth();
         if (x < bitmap.getWidth()) {
@@ -50,7 +50,7 @@ public class Car {
         //If car reaches bottom of the screen, it will spawn again at the top of the screen
         if ( y > maxY + getBitmap().getHeight()) {
             Random randomGenerator = new Random();
-            speed = randomGenerator.nextInt(5) + 5;
+            speed = randomGenerator.nextInt(6) + 8;
             y = minY - bitmap.getHeight();
             x = randomGenerator.nextInt(maxX) - bitmap.getWidth();
             if (x < bitmap.getWidth()) {
