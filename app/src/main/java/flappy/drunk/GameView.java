@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -16,6 +17,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import static android.content.ContentValues.TAG;
 
@@ -65,7 +69,6 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
     //Shared Preferences to store scores
     SharedPreferences sharedPreferences;
 
-
     //Constructor
     public GameView(Context context, int screenX, int screenY) {
         super(context);
@@ -101,6 +104,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
         //Init score
         score = 0;
         sharedPreferences = context.getSharedPreferences("SHAR_PREF_NAME",Context.MODE_PRIVATE);
+
         highScore[0] = sharedPreferences.getInt("score1",0);
         highScore[1] = sharedPreferences.getInt("score2",0);
         highScore[2] = sharedPreferences.getInt("score3",0);
@@ -125,9 +129,14 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
     }
     //Here we will update the coordinate of our object.
     private void update() {
-        score++;
+
+        if (isGameOver == false) {
+            score++;
+        }
 
         player.update();
+
+        bottle.update();
 
         for (Dirt d: dirts) {
             d.update();
@@ -160,9 +169,11 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
                 }
                 editor.apply();
             }
-        }
 
-        bottle.update();
+            if (Rect.intersects(bottle.getDetectCollision(),cars[i].getDetectCollision())) {
+                bottle.setX(-500);
+            }
+        }
 
             if (Rect.intersects(player.getDetectCollision(),bottle.getDetectCollision())) {
                 bottle.setX(-500);
@@ -192,7 +203,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
             canvas.drawBitmap(bottle.getBitmap(), bottle.getX(), bottle.getY(), paint);
 
             //Drawing the score
-            paint.setTextSize(30);
+            paint.setTextSize(40);
             canvas.drawText("Score:" + score, 100, 50, paint);
 
             //Draw Game Over
@@ -246,7 +257,24 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        gestureDetector.onTouchEvent(motionEvent);
+
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            player.handleActionDown((int)motionEvent.getX());
+        }
+
+        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            if (player.isTouched()) {
+                player.setX((int) motionEvent.getX());
+            }
+        }
+
+        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            if (player.isTouched()) {
+                player.setTouched(false);
+            }
+        }
+
+        //gestureDetector.onTouchEvent(motionEvent);
 
         if(isGameOver) {
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {

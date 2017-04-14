@@ -39,6 +39,9 @@ public class Player {
     //Collision detector
     private Rect detectCollision;
 
+    //Touch detector
+    private boolean touched;
+
     //Constructor
     public Player(Context context, int screenX, int screenY) {
         //Player position and speed
@@ -58,6 +61,22 @@ public class Player {
         //Init collision detector
         detectCollision = new Rect(x,y, bitmap.getWidth(),bitmap.getHeight());
 
+    }
+
+    public boolean isTouched(){
+        return touched;
+    }
+
+    public void setTouched(boolean touched) {
+        this.touched = touched;
+    }
+
+    public void handleActionDown(int eventX) {
+        if (eventX >= (x - bitmap.getWidth()) && (eventX <= (x + bitmap.getWidth()))) {
+            setTouched(true);
+        } else {
+            setTouched(false);
+        }
     }
 
     public void userMovingRight() {
@@ -108,12 +127,18 @@ public class Player {
         this.y = y;
     }
 
+    public void setX(int x) { this.x = x;}
+
     public Rect getDetectCollision() {
         return detectCollision;
     }
 
     public Bitmap getBitmap() {
         return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 
     public int getX() {

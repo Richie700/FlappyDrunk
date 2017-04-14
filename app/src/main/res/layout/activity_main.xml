@@ -25,4 +25,5 @@
         android:text="@string/buttonHighScore"
         android:layout_below="@+id/buttonPlay"
         android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
