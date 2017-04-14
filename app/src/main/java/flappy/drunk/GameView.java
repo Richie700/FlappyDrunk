@@ -1,15 +1,13 @@
 package flappy.drunk;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -17,9 +15,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.Random;
 
 import static android.content.ContentValues.TAG;
 
@@ -30,6 +26,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
     Context context;
+    public int screenY;
 
     //Boolean to track if the game is playing or not
     volatile boolean playing;
@@ -74,6 +71,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
         super(context);
 
         this.context = context;
+        this.screenY = screenY;
 
         //Init player
         player = new Player(context, screenX, screenY);
@@ -143,7 +141,18 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
         }
 
         for (int i = 0; i < carCount; i++) {
-            cars[i].update();
+            cars[i].update(screenY);
+
+            //More points = more speed
+            if (score > 1000) {
+                Random randomGenerator = new Random();
+                cars[i].setSpeed(randomGenerator.nextInt(20)+14);
+            }
+
+            if (score > 2000) {
+                Random randomGenerator = new Random();
+                cars[i].setSpeed(randomGenerator.nextInt(30)+14);
+            }
 
             //Collision between car and player
             if (Rect.intersects(player.getDetectCollision(),cars[i].getDetectCollision())) {
@@ -177,6 +186,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
             if (Rect.intersects(player.getDetectCollision(),bottle.getDetectCollision())) {
                 bottle.setX(-500);
+                score +=100;
             }
     }
     //Here we will draw the characters to the canvas.

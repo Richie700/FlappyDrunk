@@ -11,7 +11,7 @@ public class Bottle {
 
     private int x;
     private int y;
-    private int speed = 6;
+    private int speed;
 
     private Bitmap bitmap;
     private Bitmap resizedBitmap;
@@ -38,6 +38,12 @@ public class Bottle {
         maxY = screenY;
         minX = 0;
         minY = 0;
+
+        if(screenY > 2000) {
+            speed = 6;
+        } else {
+            speed = 4;
+        }
 
         //Generating a random coordinate but keeping the coordinate inside the screen size
         Random randomGenerator = new Random();

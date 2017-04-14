@@ -10,7 +10,7 @@ import java.util.Random;
 public class Car {
     private int x;
     private int y;
-    private int speed = 0;
+    private int speed;
 
     private Bitmap bitmap;
 
@@ -33,7 +33,12 @@ public class Car {
 
         //Generating a random coordinate but keeping the coordinate inside the screen size
         Random randomGenerator = new Random();
-        speed = randomGenerator.nextInt(6)+8;
+
+        if (screenY > 2000) {
+            speed = randomGenerator.nextInt(10)+14;
+        } else {
+            speed = randomGenerator.nextInt(8)+10;
+        }
         y = minY - bitmap.getHeight();
         x = randomGenerator.nextInt(maxX) - bitmap.getWidth();
         if (x < bitmap.getWidth()) {
@@ -44,13 +49,17 @@ public class Car {
         detectCollision = new Rect(x,y, bitmap.getWidth(),bitmap.getHeight());
     }
 
-    public void update() {
+    public void update(int screenY) {
         y += speed;
 
         //If car reaches bottom of the screen, it will spawn again at the top of the screen
         if ( y > maxY + getBitmap().getHeight()) {
             Random randomGenerator = new Random();
-            speed = randomGenerator.nextInt(6) + 8;
+            if (screenY > 2000) {
+                speed = randomGenerator.nextInt(10)+14;
+            } else {
+                speed = randomGenerator.nextInt(8)+10;
+            }
             y = minY - bitmap.getHeight();
             x = randomGenerator.nextInt(maxX) - bitmap.getWidth();
             if (x < bitmap.getWidth()) {
@@ -81,7 +90,7 @@ public class Car {
         return y;
     }
 
-    public int getSpeed() {
-        return speed;
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 }

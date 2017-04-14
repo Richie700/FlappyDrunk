@@ -6,7 +6,10 @@ import android.graphics.Point;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
+import static android.content.ContentValues.TAG;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -24,7 +27,8 @@ public class GameActivity extends AppCompatActivity {
         //Init game view object
         gameView = new GameView(this, size.x, size.y);
         setContentView(gameView);
-
+        Log.d("ScreenX",String.valueOf(size.x));
+        Log.d("ScreenY",String.valueOf(size.y));
     }
 
     //pausing game when activity is paused

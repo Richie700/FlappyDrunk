@@ -5,7 +5,7 @@ import java.util.Random;
 public class Dirt {
     private int x;
     private int y;
-    private int speed = 6;
+    private int speed;
 
     private int minY;
     private int maxY;
@@ -18,6 +18,13 @@ public class Dirt {
         maxY = screenY;
         minX = 0;
         minY = 0;
+
+        if(screenY > 2000) {
+            speed = 6;
+        } else {
+            speed = 4;
+        }
+
         Random randomGenerator = new Random();
 
         //Generating a random coordinate but keeping the coordinate inside the screen size
