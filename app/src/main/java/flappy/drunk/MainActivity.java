@@ -2,6 +2,7 @@ package flappy.drunk;
 
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,11 +14,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button buttonPlay;
     private Button buttonHighScore;
+    MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mediaPlayer = MediaPlayer.create(this,R.raw.rocketman);
+        mediaPlayer.start();
 
         //Setting the orientation to landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -32,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if (view == buttonPlay) {
             startActivity(new Intent(MainActivity.this,GameActivity.class));
+            mediaPlayer.stop();
         }
         if (view == buttonHighScore) {
             startActivity(new Intent(MainActivity.this,HighScoreActivity.class));

@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -27,6 +28,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
     Context context;
     public int screenY;
+    MediaPlayer mediaPlayer;
 
     //Boolean to track if the game is playing or not
     volatile boolean playing;
@@ -110,6 +112,11 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
         //Init Game Over
         isGameOver = false;
+
+        //Init music
+        mediaPlayer = MediaPlayer.create(context,R.raw.rocketman);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
 
     @Override
@@ -214,7 +221,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
             //Drawing the score
             paint.setTextSize(40);
-            canvas.drawText("Score:" + score, 100, 50, paint);
+            canvas.drawText("Score:" + score, canvas.getWidth() / 2 - 60, 50, paint);
 
             //Draw Game Over
             if (isGameOver) {
@@ -239,6 +246,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
     public void pause() {
         playing = false;
+        mediaPlayer.pause();
         //Stopping the gameThread
         try {
             gameThread.join();
@@ -249,6 +257,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
     public void resume() {
         playing = true;
+        mediaPlayer.start();
         gameThread = new Thread(this);
         gameThread.start();
     }
