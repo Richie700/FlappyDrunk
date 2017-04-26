@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -19,23 +20,17 @@ import java.util.Random;
 
 import static android.content.ContentValues.TAG;
 
-public class GameView extends SurfaceView implements Runnable,GestureDetector.OnGestureListener {
-
-    private static final int SWIPE_MIN_DISTANCE = 120;
-    private static final int SWIPE_MAX_OFF_PATH = 250;
-    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+public class GameView extends SurfaceView implements Runnable {
 
     Context context;
     public int screenY;
+    MediaPlayer mediaPlayer;
 
     //Boolean to track if the game is playing or not
     volatile boolean playing;
 
     //Game over indicator
     private boolean isGameOver;
-
-    //GestureDetector
-    GestureDetector gestureDetector;
 
     //Game thread
     private Thread gameThread = null;
@@ -60,9 +55,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
     //Highscore
     int score;
-
     int highScore[] = new int[4];
-
     //Shared Preferences to store scores
     SharedPreferences sharedPreferences;
 
@@ -96,9 +89,6 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
         //Init bottle object
         bottle = new Bottle(context,screenX,screenY);
 
-        //Init gesture detector
-        gestureDetector = new GestureDetector(context,this);
-
         //Init score
         score = 0;
         sharedPreferences = context.getSharedPreferences("SHAR_PREF_NAME",Context.MODE_PRIVATE);
@@ -110,6 +100,11 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
         //Init Game Over
         isGameOver = false;
+
+        //Init music
+        mediaPlayer = MediaPlayer.create(context,R.raw.rocketman);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
 
     @Override
@@ -146,12 +141,12 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
             //More points = more speed
             if (score > 1000) {
                 Random randomGenerator = new Random();
-                cars[i].setSpeed(randomGenerator.nextInt(20)+14);
+                cars[i].setSpeed(randomGenerator.nextInt(30)+14);
             }
 
             if (score > 2000) {
                 Random randomGenerator = new Random();
-                cars[i].setSpeed(randomGenerator.nextInt(30)+14);
+                cars[i].setSpeed(randomGenerator.nextInt(40)+14);
             }
 
             //Collision between car and player
@@ -214,7 +209,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
             //Drawing the score
             paint.setTextSize(40);
-            canvas.drawText("Score:" + score, 100, 50, paint);
+            canvas.drawText("Score:" + score, canvas.getWidth() / 2 - 60, 50, paint);
 
             //Draw Game Over
             if (isGameOver) {
@@ -239,6 +234,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
     public void pause() {
         playing = false;
+        mediaPlayer.pause();
         //Stopping the gameThread
         try {
             gameThread.join();
@@ -249,6 +245,7 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
 
     public void resume() {
         playing = true;
+        mediaPlayer.start();
         gameThread = new Thread(this);
         gameThread.start();
     }
@@ -256,14 +253,6 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
     //*******************
     //Movement
     //*******************
-
-    public void onLeftSwipe() {
-       player.userMovingLeft();
-    }
-
-    public void onRightSwipe() {
-        player.userMovingRight();
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
@@ -284,8 +273,6 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
             }
         }
 
-        //gestureDetector.onTouchEvent(motionEvent);
-
         if(isGameOver) {
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                 context.startActivity(new Intent(context,MainActivity.class));
@@ -293,55 +280,5 @@ public class GameView extends SurfaceView implements Runnable,GestureDetector.On
         }
         return true;
     }
-
-    @Override
-    public boolean onFling(MotionEvent first_down_motionEvent, MotionEvent last_move_motionEvent, float velocity_x, float velocity_y) {
-        try {
-            if (Math.abs(first_down_motionEvent.getY() - last_move_motionEvent.getY()) > SWIPE_MAX_OFF_PATH){
-                return false;
-            }
-            // right to left swipe
-            if (first_down_motionEvent.getX() - last_move_motionEvent.getX() > SWIPE_MIN_DISTANCE
-                    && Math.abs(velocity_x) > SWIPE_THRESHOLD_VELOCITY) {
-                onLeftSwipe();
-                Log.d(TAG,"LeftSwipe");
-            }
-            // left to right swipe
-            else if (last_move_motionEvent.getX() - first_down_motionEvent.getX() > SWIPE_MIN_DISTANCE
-                    && Math.abs(velocity_x) > SWIPE_THRESHOLD_VELOCITY) {
-                onRightSwipe();
-                Log.d(TAG,"RightSwipe");
-            }
-        }catch (Exception e){
-
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-
-    }
-
 }
 
