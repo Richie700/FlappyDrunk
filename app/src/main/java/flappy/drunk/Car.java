@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.nfc.Tag;
+import android.util.Log;
 
 import java.util.Random;
 
@@ -19,30 +21,46 @@ public class Car {
     private int minX;
     private int maxX;
 
+    private int randomLane;
+    private int lane1, lane2, lane3;
     //Collision detector
     private Rect detectCollision;
 
     //Constructor
     public Car(Context context,int screenX, int screenY) {
         bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.car_black_1);
+        Log.d("BitmapWidth = ",String.valueOf(bitmap.getWidth()));
 
         maxX = screenX;
+        Log.d("maxX = ",String.valueOf(maxX));
         maxY = screenY;
         minX = 0;
         minY = 0;
 
-        //Generating a random coordinate but keeping the coordinate inside the screen size
+        //Car lanes
+        lane1 = ((maxX / 3) / 2);
+        lane2 = maxX / 2;
+        lane3 = (maxX / 2) + (maxX / 3);
+
         Random randomGenerator = new Random();
 
+        //Speed
         if (screenY > 2000) {
             speed = randomGenerator.nextInt(10)+14;
         } else {
             speed = randomGenerator.nextInt(8)+10;
         }
+
+        //Random lane
         y = minY - bitmap.getHeight();
-        x = randomGenerator.nextInt(maxX) - bitmap.getWidth();
-        if (x < bitmap.getWidth()) {
-            x = x + bitmap.getWidth();
+        randomLane = randomGenerator.nextInt(3);
+        Log.d("Lane = ",String.valueOf(randomLane));
+        if (randomLane == 0) {
+            x = lane1 - (bitmap.getWidth() / 2 );
+        } else if (randomLane == 1) {
+            x = lane2 - (bitmap.getWidth() / 2 );
+        } else if (randomLane == 2) {
+            x = lane3 - (bitmap.getWidth() / 2 );
         }
 
         //Init collision detector
@@ -53,17 +71,24 @@ public class Car {
         y += speed;
 
         //If car reaches bottom of the screen, it will spawn again at the top of the screen
-        if ( y > maxY + getBitmap().getHeight()) {
+        if ( y > maxY + bitmap.getHeight()) {
             Random randomGenerator = new Random();
+
             if (screenY > 2000) {
-                speed = randomGenerator.nextInt(10)+14;
+                speed = randomGenerator.nextInt(15)+15;
             } else {
-                speed = randomGenerator.nextInt(8)+10;
+                speed = randomGenerator.nextInt(10)+10;
             }
+
             y = minY - bitmap.getHeight();
-            x = randomGenerator.nextInt(maxX) - bitmap.getWidth();
-            if (x < bitmap.getWidth()) {
-                x = x + bitmap.getWidth();
+            randomLane = randomGenerator.nextInt(3);
+            Log.d("Lane = ",String.valueOf(randomLane));
+            if (randomLane == 0) {
+                x = lane1 - (bitmap.getWidth() / 2 );
+            } else if (randomLane == 1) {
+                x = lane2 - (bitmap.getWidth() / 2 );
+            } else if (randomLane == 2) {
+                x = lane3 - (bitmap.getWidth() / 2 );
             }
         }
 
