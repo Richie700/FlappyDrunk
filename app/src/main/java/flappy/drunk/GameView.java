@@ -4,6 +4,8 @@ package flappy.drunk;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -14,6 +16,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -24,6 +27,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     Context context;
     public int screenY;
+    public int screenX;
     MediaPlayer mediaPlayer;
 
     //Boolean to track if the game is playing or not
@@ -59,12 +63,15 @@ public class GameView extends SurfaceView implements Runnable {
     //Shared Preferences to store scores
     SharedPreferences sharedPreferences;
 
+    Buttons pauseButton;
+
     //Constructor
     public GameView(Context context, int screenX, int screenY) {
         super(context);
 
         this.context = context;
         this.screenY = screenY;
+        this.screenX = screenX;
 
         //Init player
         player = new Player(context, screenX, screenY);
@@ -89,6 +96,9 @@ public class GameView extends SurfaceView implements Runnable {
         //Init bottle object
         bottle = new Bottle(context,screenX,screenY);
 
+        //Init buttons
+        pauseButton = new Buttons(context,screenX,screenY);
+
         //Init score
         score = 0;
         sharedPreferences = context.getSharedPreferences("SHAR_PREF_NAME",Context.MODE_PRIVATE);
@@ -105,6 +115,7 @@ public class GameView extends SurfaceView implements Runnable {
         mediaPlayer = MediaPlayer.create(context,R.raw.rocketman);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+
     }
 
     @Override
@@ -138,15 +149,25 @@ public class GameView extends SurfaceView implements Runnable {
         for (int i = 0; i < carCount; i++) {
             cars[i].update(screenY);
 
+            Random randomGenerator = new Random();
+
+            if (screenY > 2000) {
+                cars[i].setSpeed(randomGenerator.nextInt(15)+15);
+            } else {
+                cars[i].setSpeed(randomGenerator.nextInt(10)+10);
+            }
+
             //More points = more speed
             if (score > 1000) {
-                Random randomGenerator = new Random();
-                cars[i].setSpeed(randomGenerator.nextInt(30)+14);
+                cars[i].setSpeed(randomGenerator.nextInt(30-20)+20);
             }
 
             if (score > 2000) {
-                Random randomGenerator = new Random();
-                cars[i].setSpeed(randomGenerator.nextInt(40)+14);
+                cars[i].setSpeed(randomGenerator.nextInt(40-30)+30);
+            }
+
+            if (score > 3000) {
+                cars[i].setSpeed(randomGenerator.nextInt(50-40)+40);
             }
 
             //Collision between car and player
@@ -211,6 +232,9 @@ public class GameView extends SurfaceView implements Runnable {
             paint.setTextSize(40);
             canvas.drawText("Score:" + score, canvas.getWidth() / 2 - 60, 50, paint);
 
+            //Drawin buttons
+            canvas.drawBitmap(pauseButton.getBitmap(), pauseButton.getX(), pauseButton.getY(), paint);
+
             //Draw Game Over
             if (isGameOver) {
                 paint.setTextSize(150);
@@ -241,6 +265,7 @@ public class GameView extends SurfaceView implements Runnable {
         }catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
     public void resume() {
@@ -248,6 +273,8 @@ public class GameView extends SurfaceView implements Runnable {
         mediaPlayer.start();
         gameThread = new Thread(this);
         gameThread.start();
+        pauseButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_pause_white_48dp));
+
     }
 
     //*******************
@@ -259,6 +286,13 @@ public class GameView extends SurfaceView implements Runnable {
 
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             player.handleActionDown((int)motionEvent.getX());
+            pauseButton.buttonTouch((int)motionEvent.getX(), (int)motionEvent.getY());
+            if (pauseButton.isTouched() && playing) {
+                pauseButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_play_arrow_white_48dp));
+                pause();
+            } else if (pauseButton.isTouched() && !playing) {
+                resume();
+            }
         }
 
         if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
@@ -270,6 +304,9 @@ public class GameView extends SurfaceView implements Runnable {
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             if (player.isTouched()) {
                 player.setTouched(false);
+            }
+            if (pauseButton.isTouched()) {
+                pauseButton.setTouched(false);
             }
         }
 
