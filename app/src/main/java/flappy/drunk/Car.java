@@ -46,9 +46,9 @@ public class Car {
 
         //Speed
         if (screenY > 2000) {
-            speed = randomGenerator.nextInt(10)+14;
+            speed = randomGenerator.nextInt(15)+15;
         } else {
-            speed = randomGenerator.nextInt(8)+10;
+            speed = randomGenerator.nextInt(10)+10;
         }
 
         //Random lane
@@ -73,12 +73,6 @@ public class Car {
         //If car reaches bottom of the screen, it will spawn again at the top of the screen
         if ( y > maxY + bitmap.getHeight()) {
             Random randomGenerator = new Random();
-
-            if (screenY > 2000) {
-                speed = randomGenerator.nextInt(15)+15;
-            } else {
-                speed = randomGenerator.nextInt(10)+10;
-            }
 
             y = minY - bitmap.getHeight();
             randomLane = randomGenerator.nextInt(3);
