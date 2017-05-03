@@ -49,14 +49,15 @@ public class Player {
 
     //Constructor
     public Player(Context context, int screenX, int screenY) {
-        //Player position and speed
-        x = screenX / 2 - 43;
-        y = screenY - (screenY / 4);
-
         //Bitmap from drawable resource
         playerBitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.sprite_0);
 
-        //Calculating maxX
+
+        //Player position and speed
+        x = screenX / 2 - (playerBitmap.getWidth() / 2);
+        y = screenY - (screenY / 4);
+
+      //Calculating maxX
         maxX = screenX - playerBitmap.getWidth();
 
         //Left side x point is 0 so x will always be zero
