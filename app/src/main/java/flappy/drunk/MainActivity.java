@@ -2,6 +2,7 @@ package flappy.drunk;
 
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +28,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Setting the orientation to landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        Typeface pixelFont = Typeface.createFromAsset(getAssets(), "Kemco.ttf");
         buttonPlay = (Button) findViewById(R.id.buttonPlay);
+        buttonPlay.setTypeface(pixelFont);
         buttonHighScore = (Button) findViewById(R.id.buttonHighScore);
         buttonPlay.setOnClickListener(this);
         buttonHighScore.setOnClickListener(this);

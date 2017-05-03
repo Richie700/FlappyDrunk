@@ -12,7 +12,26 @@ import static android.content.ContentValues.TAG;
 
 public class Player {
 
-    private Bitmap bitmap;
+    private Bitmap playerBitmap;
+
+    // New variables for the sprite sheet animation
+
+    // These next two values can be anything you like
+    // As long as the ratio doesn't distort the sprite too much
+    private int frameWidth = 32;
+    private int frameHeight = 32;
+
+    // How many frames are there on the sprite sheet?
+    private int frameCount = 2;
+
+    // Start at the first frame
+    private int currentFrame = 0;
+
+    // What time was it when we last changed frames
+    private long lastFrameChangeTime = 0;
+
+    // How long should each frame last
+    private int frameLengthInMilliseconds = 100;
 
     //Coordinates
     private int x;
@@ -32,19 +51,19 @@ public class Player {
     public Player(Context context, int screenX, int screenY) {
         //Player position and speed
         x = screenX / 2 - 43;
-        y = screenY - 500;
+        y = screenY - (screenY / 4);
 
         //Bitmap from drawable resource
-        bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.survivor1_stand);
+        playerBitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.sprite_0);
 
         //Calculating maxX
-        maxX = screenX - bitmap.getWidth();
+        maxX = screenX - playerBitmap.getWidth();
 
         //Left side x point is 0 so x will always be zero
         minX = 0;
 
         //Init collision detector
-        detectCollision = new Rect(x,y, bitmap.getWidth(),bitmap.getHeight());
+        detectCollision = new Rect(x,y, playerBitmap.getWidth(),playerBitmap.getHeight());
 
     }
 
@@ -57,7 +76,7 @@ public class Player {
     }
 
     public void handleActionDown(int eventX) {
-        if (eventX >= (x - bitmap.getWidth()) && (eventX <= (x + bitmap.getWidth()))) {
+        if (eventX >= (x - playerBitmap.getWidth()) && (eventX <= (x + playerBitmap.getWidth()))) {
             setTouched(true);
         } else {
             setTouched(false);
@@ -78,8 +97,8 @@ public class Player {
         //Adding the top, left, bottom and right to the rect object
         detectCollision.left = x;
         detectCollision.top = y;
-        detectCollision.right = x + bitmap.getWidth();
-        detectCollision.bottom = y + bitmap.getHeight();
+        detectCollision.right = x + playerBitmap.getWidth();
+        detectCollision.bottom = y + playerBitmap.getHeight();
     }
 
     public void setY(int y) {
@@ -93,11 +112,11 @@ public class Player {
     }
 
     public Bitmap getBitmap() {
-        return bitmap;
+        return playerBitmap;
     }
 
     public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+        this.playerBitmap = bitmap;
     }
 
     public int getX() {

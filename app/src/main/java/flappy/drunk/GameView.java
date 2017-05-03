@@ -19,6 +19,9 @@ import android.view.SurfaceView;
 import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import static android.content.ContentValues.TAG;
@@ -89,8 +92,13 @@ public class GameView extends SurfaceView implements Runnable {
 
         //Init car object array
         cars = new Car[carCount];
+        List<Integer> laneNumberList = new LinkedList<Integer>();
+        for (int i = 0; i < 3; i++){
+            laneNumberList.add(i);
+        }
+        Collections.shuffle(laneNumberList);
         for (int i = 0; i < carCount; i++) {
-            cars[i] = new Car(context,screenX,screenY);
+            cars[i] = new Car(context,screenX,screenY,laneNumberList.get(i));
         }
 
         //Init bottle object
