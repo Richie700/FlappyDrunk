@@ -56,11 +56,6 @@ public class Player {
         x = screenX / 2 - (playerBitmap.getWidth() / 2);
         y = screenY - (screenY / 4);
 
-
-        //Player position and speed
-        x = screenX / 2 - (playerBitmap.getWidth() / 2);
-        y = screenY - (screenY / 4);
-
       //Calculating maxX
         maxX = screenX - playerBitmap.getWidth();
 
@@ -69,7 +64,6 @@ public class Player {
 
         //Init collision detector
         detectCollision = new Rect(x,y, playerBitmap.getWidth(),playerBitmap.getHeight());
-
     }
 
     public boolean isTouched(){
@@ -110,7 +104,7 @@ public class Player {
         this.y = y;
     }
 
-    public void setX(int x) { this.x = x;}
+    public void setX(int x) { this.x = x - playerBitmap.getWidth() / 2;}
 
     public Rect getDetectCollision() {
         return detectCollision;
