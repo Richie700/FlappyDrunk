@@ -6,10 +6,8 @@ import android.graphics.Point;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import static android.content.ContentValues.TAG;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -41,6 +39,12 @@ public class GameActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         gameView.resume();
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        gameView.pause();
     }
 
     @Override

@@ -4,16 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+
 public class Buttons {
     private Bitmap bitmap;
 
-    private int x, y;
-    boolean setTouched, touched;
+    boolean touched;
+    int x,y;
 
     public Buttons(Context context, int screenX, int screenY) {
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_pause_white_48dp);
-
-        x = screenX - bitmap.getWidth();
+        bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_pause_white_48dp);
+        x = screenX - bitmap.getWidth() ;
         y = 5;
     }
 
@@ -27,7 +27,7 @@ public class Buttons {
 
     public void buttonTouch(int eventX, int eventY) {
 
-        if (eventX >= (x - bitmap.getWidth()) && (eventX <= (x + bitmap.getWidth()))) {
+        if (eventX >= (x - bitmap.getWidth() / 2) && (eventX <= (x + bitmap.getWidth() / 2))) {
             if (eventY >= (y - bitmap.getHeight()) && (eventY <= (y + bitmap.getHeight()))) {
                 setTouched(true);
             } else {
@@ -48,10 +48,6 @@ public class Buttons {
 
     public int getY() {
         return y;
-    }
-
-    public boolean isSetTouched() {
-        return setTouched;
     }
 
     public void setBitmap(Bitmap bitmap) {

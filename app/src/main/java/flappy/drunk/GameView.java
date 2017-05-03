@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -66,6 +67,7 @@ public class GameView extends SurfaceView implements Runnable {
     //Shared Preferences to store scores
     SharedPreferences sharedPreferences;
 
+    //Buttons
     Buttons pauseButton;
 
     //Constructor
@@ -180,7 +182,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             //Collision between car and player
             if (Rect.intersects(player.getDetectCollision(),cars[i].getDetectCollision())) {
-                player.setY(-200);
+                player.setY(-500);
                 for (Dirt d:dirts) {
                     d.setSpeed(0);
                 }
@@ -241,6 +243,7 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawText("Score:" + score, canvas.getWidth() / 2 - 60, 50, paint);
 
             //Drawin buttons
+            //pauseButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_pause_white_48dp));
             canvas.drawBitmap(pauseButton.getBitmap(), pauseButton.getX(), pauseButton.getY(), paint);
 
             //Draw Game Over
@@ -281,8 +284,6 @@ public class GameView extends SurfaceView implements Runnable {
         mediaPlayer.start();
         gameThread = new Thread(this);
         gameThread.start();
-        pauseButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_pause_white_48dp));
-
     }
 
     //*******************
@@ -294,13 +295,13 @@ public class GameView extends SurfaceView implements Runnable {
 
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             player.handleActionDown((int)motionEvent.getX());
-            pauseButton.buttonTouch((int)motionEvent.getX(), (int)motionEvent.getY());
+            pauseButton.buttonTouch((int)motionEvent.getX(),(int)motionEvent.getY());
             if (pauseButton.isTouched() && playing) {
-                pauseButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_play_arrow_white_48dp));
                 pause();
             } else if (pauseButton.isTouched() && !playing) {
                 resume();
             }
+
         }
 
         if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {

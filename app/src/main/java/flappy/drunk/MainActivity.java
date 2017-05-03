@@ -69,4 +69,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.stop();
+    }
 }
