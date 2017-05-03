@@ -182,7 +182,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             //Collision between car and player
             if (Rect.intersects(player.getDetectCollision(),cars[i].getDetectCollision())) {
-                player.setY(-200);
+                player.setY(-500);
                 for (Dirt d:dirts) {
                     d.setSpeed(0);
                 }
@@ -246,7 +246,7 @@ public class GameView extends SurfaceView implements Runnable {
             pauseButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_pause_white_48dp));
             canvas.drawBitmap(pauseButton.getBitmap(), screenX-pauseButton.getBitmap().getWidth(), 5, paint);
             muteButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_volume_off_white_48dp));
-            canvas.drawBitmap(muteButton.getBitmap(),30,5,paint);
+            canvas.drawBitmap(muteButton.getBitmap(),10,5,paint);
 
             //Draw Game Over
             if (isGameOver) {
@@ -299,6 +299,7 @@ public class GameView extends SurfaceView implements Runnable {
 
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             player.handleActionDown((int)motionEvent.getX());
+            /*
             pauseButton.buttonTouch((int)motionEvent.getX(), (int)motionEvent.getY());
             muteButton.buttonTouch((int)motionEvent.getX(), (int)motionEvent.getY());
             if (pauseButton.isTouched() && playing) {
@@ -306,10 +307,7 @@ public class GameView extends SurfaceView implements Runnable {
                 pause();
             } else if (pauseButton.isTouched() && !playing) {
                 resume();
-            }
-            if (muteButton.isTouched()) {
-                mediaPlayer.pause();
-            }
+            }*/
         }
 
         if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
