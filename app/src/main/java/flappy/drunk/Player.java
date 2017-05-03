@@ -56,7 +56,12 @@ public class Player {
         x = screenX / 2 - (playerBitmap.getWidth() / 2);
         y = screenY - (screenY / 4);
 
-        //Calculating maxX
+
+        //Player position and speed
+        x = screenX / 2 - (playerBitmap.getWidth() / 2);
+        y = screenY - (screenY / 4);
+
+      //Calculating maxX
         maxX = screenX - playerBitmap.getWidth();
 
         //Left side x point is 0 so x will always be zero
