@@ -63,8 +63,9 @@ public class GameView extends SurfaceView implements Runnable {
     //Shared Preferences to store scores
     SharedPreferences sharedPreferences;
 
+    //Buttons
     Buttons pauseButton;
-
+    Buttons muteButton;
     //Constructor
     public GameView(Context context, int screenX, int screenY) {
         super(context);
@@ -98,6 +99,7 @@ public class GameView extends SurfaceView implements Runnable {
 
         //Init buttons
         pauseButton = new Buttons(context,screenX,screenY);
+        muteButton = new Buttons(context,screenX,screenY);
 
         //Init score
         score = 0;
@@ -233,7 +235,10 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawText("Score:" + score, canvas.getWidth() / 2 - 60, 50, paint);
 
             //Drawin buttons
-            canvas.drawBitmap(pauseButton.getBitmap(), pauseButton.getX(), pauseButton.getY(), paint);
+            pauseButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_pause_white_48dp));
+            canvas.drawBitmap(pauseButton.getBitmap(), screenX-pauseButton.getBitmap().getWidth(), 5, paint);
+            muteButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_volume_off_white_48dp));
+            canvas.drawBitmap(muteButton.getBitmap(),30,5,paint);
 
             //Draw Game Over
             if (isGameOver) {
@@ -287,11 +292,15 @@ public class GameView extends SurfaceView implements Runnable {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             player.handleActionDown((int)motionEvent.getX());
             pauseButton.buttonTouch((int)motionEvent.getX(), (int)motionEvent.getY());
+            muteButton.buttonTouch((int)motionEvent.getX(), (int)motionEvent.getY());
             if (pauseButton.isTouched() && playing) {
                 pauseButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_play_arrow_white_48dp));
                 pause();
             } else if (pauseButton.isTouched() && !playing) {
                 resume();
+            }
+            if (muteButton.isTouched()) {
+                mediaPlayer.pause();
             }
         }
 

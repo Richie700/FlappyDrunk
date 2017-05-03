@@ -11,10 +11,7 @@ public class Buttons {
     boolean setTouched, touched;
 
     public Buttons(Context context, int screenX, int screenY) {
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_pause_white_48dp);
 
-        x = screenX - bitmap.getWidth();
-        y = 5;
     }
 
     public boolean isTouched() {
