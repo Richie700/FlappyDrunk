@@ -8,12 +8,12 @@
 
     <Button
         android:id="@+id/buttonPlay"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:background="@drawable/button"
         android:layout_centerVertical="true"
         android:text="@string/buttonPlay"
-        tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="217dp"
+
         android:layout_alignStart="@+id/buttonHighScore"
         android:layout_alignEnd="@+id/buttonHighScore" />
 

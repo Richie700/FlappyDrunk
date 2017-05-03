@@ -27,7 +27,7 @@ public class Car {
     private Rect detectCollision;
 
     //Constructor
-    public Car(Context context,int screenX, int screenY) {
+    public Car(Context context,int screenX, int screenY,int lane) {
         bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.car_black_1);
         Log.d("BitmapWidth = ",String.valueOf(bitmap.getWidth()));
 
@@ -38,9 +38,9 @@ public class Car {
         minY = 0;
 
         //Car lanes
-        lane1 = ((maxX / 3) / 2);
-        lane2 = maxX / 2;
-        lane3 = (maxX / 2) + (maxX / 3);
+        lane1 = (maxX / 3) - (maxX / 6);
+        lane2 = (maxX / 3) + (maxX / 3) - (maxX / 6);
+        lane3 = (maxX / 3) + (maxX / 3) + (maxX / 3) - (maxX / 6);
 
         Random randomGenerator = new Random();
 
@@ -53,7 +53,8 @@ public class Car {
 
         //Random lane
         y = minY - bitmap.getHeight();
-        randomLane = randomGenerator.nextInt(3);
+        //randomLane = randomGenerator.nextInt(3);
+        randomLane = lane;
         Log.d("Lane = ",String.valueOf(randomLane));
         if (randomLane == 0) {
             x = lane1 - (bitmap.getWidth() / 2 );
