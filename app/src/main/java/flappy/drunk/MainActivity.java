@@ -3,18 +3,24 @@ package flappy.drunk;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.content.Intent;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button buttonPlay;
     private Button buttonHighScore;
+    private TextView title;
+    private ImageView titleImg;
     MediaPlayer mediaPlayer;
 
     @Override
@@ -29,11 +35,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Typeface pixelFont = Typeface.createFromAsset(getAssets(), "Kemco.ttf");
+        title = (TextView) findViewById(R.id.textView);
+        title.setTypeface(pixelFont);
         buttonPlay = (Button) findViewById(R.id.buttonPlay);
         buttonPlay.setTypeface(pixelFont);
         buttonHighScore = (Button) findViewById(R.id.buttonHighScore);
+        buttonHighScore.setTypeface(pixelFont);
         buttonPlay.setOnClickListener(this);
         buttonHighScore.setOnClickListener(this);
+
+        titleImg = (ImageView)findViewById(R.id.imageView) ;
+        titleImg.setImageResource(R.drawable.player_animation);
+        AnimationDrawable titleAnimation = (AnimationDrawable)titleImg.getDrawable();
+        titleAnimation.start();
     }
 
     @Override

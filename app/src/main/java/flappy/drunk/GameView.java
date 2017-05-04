@@ -57,6 +57,9 @@ public class GameView extends SurfaceView implements Runnable {
     private Car[] cars;
     private int carCount = 2;
 
+    //public int for cars to store their lane info
+    public static int carLane;
+
     //Object array for bottles
     private Bottle bottle;
 
@@ -325,5 +328,6 @@ public class GameView extends SurfaceView implements Runnable {
         }
         return true;
     }
+    
 }
 

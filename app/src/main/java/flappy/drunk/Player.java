@@ -106,7 +106,7 @@ public class Player {
         this.y = y;
     }
 
-    public void setX(int x) { this.x = x;}
+    public void setX(int x) { this.x = x - playerBitmap.getWidth() / 2;}
 
     public Rect getDetectCollision() {
         return detectCollision;

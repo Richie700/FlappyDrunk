@@ -76,7 +76,12 @@ public class Car {
             Random randomGenerator = new Random();
 
             y = minY - bitmap.getHeight();
+            int otherCarLane  = GameView.carLane;
             randomLane = randomGenerator.nextInt(3);
+            while (otherCarLane == randomLane){
+                randomLane = randomGenerator.nextInt(3);
+            }
+            GameView.carLane = randomLane;
             Log.d("Lane = ",String.valueOf(randomLane));
             if (randomLane == 0) {
                 x = lane1 - (bitmap.getWidth() / 2 );
