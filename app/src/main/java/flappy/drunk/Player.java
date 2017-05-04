@@ -49,11 +49,10 @@ public class Player {
 
     //Constructor
     public Player(Context context, int screenX, int screenY) {
-        //Bitmap from drawable resource
+
         playerBitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.sprite_0);
 
-
-        //Player position and speed
+        //Player position
         x = screenX / 2 - (playerBitmap.getWidth() / 2);
         y = screenY - (screenY / 4);
 
@@ -65,7 +64,6 @@ public class Player {
 
         //Init collision detector
         detectCollision = new Rect(x,y, playerBitmap.getWidth(),playerBitmap.getHeight());
-
     }
 
     public boolean isTouched(){
