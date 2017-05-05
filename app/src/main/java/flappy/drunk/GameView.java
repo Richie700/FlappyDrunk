@@ -4,28 +4,22 @@ package flappy.drunk;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
-import static android.content.ContentValues.TAG;
 
 public class GameView extends SurfaceView implements Runnable {
 
@@ -36,6 +30,9 @@ public class GameView extends SurfaceView implements Runnable {
 
     //Boolean to track if the game is playing or not
     volatile boolean playing;
+
+    //Music indicator
+    private boolean musicPlaying;
 
     //Game over indicator
     private boolean isGameOver;
@@ -64,14 +61,16 @@ public class GameView extends SurfaceView implements Runnable {
     //Object array for bottles
     private Bottle bottle;
 
-    //Highscore
-    int score;
+    //Highscore, speed
+    int score = 0, previousScore = 1000, speed = 20;
+
     int highScore[] = new int[4];
     //Shared Preferences to store scores
     SharedPreferences sharedPreferences;
 
-    //Buttons
-    Buttons pauseButton;
+    //ButtonPause
+    ButtonPause pauseButton;
+    ButtonMute muteButton;
 
     //Constructor
     public GameView(Context context, int screenX, int screenY) {
@@ -110,7 +109,8 @@ public class GameView extends SurfaceView implements Runnable {
         bottle = new Bottle(context,screenX,screenY);
 
         //Init buttons
-        pauseButton = new Buttons(context,screenX,screenY);
+        pauseButton = new ButtonPause(context,screenX,screenY);
+        muteButton = new ButtonMute(context, screenX, screenY);
 
         //Init score
         score = 0;
@@ -128,7 +128,7 @@ public class GameView extends SurfaceView implements Runnable {
         mediaPlayer = MediaPlayer.create(context,R.raw.rocketman);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
-
+        musicPlaying = true;
     }
 
     @Override
@@ -164,24 +164,17 @@ public class GameView extends SurfaceView implements Runnable {
 
             Random randomGenerator = new Random();
 
-            if (screenY > 2000) {
-                cars[i].setSpeed(randomGenerator.nextInt(15)+15);
-            } else {
-                cars[i].setSpeed(randomGenerator.nextInt(10)+10);
-            }
+            cars[i].setSpeed(randomGenerator.nextInt(speed)+ speed);
+
 
             //More points = more speed
-            if (score > 1000) {
-                cars[i].setSpeed(randomGenerator.nextInt(30-20)+20);
+            if (score > previousScore) {
+                previousScore = previousScore + 1000;
+                speed +=10;
+                Log.d("Speed",String.valueOf(speed));
+                cars[i].setSpeed(randomGenerator.nextInt(speed - (speed-10))+speed);
             }
 
-            if (score > 2000) {
-                cars[i].setSpeed(randomGenerator.nextInt(40-30)+30);
-            }
-
-            if (score > 3000) {
-                cars[i].setSpeed(randomGenerator.nextInt(50-40)+40);
-            }
 
             //Collision between car and player
             if (Rect.intersects(player.getDetectCollision(),cars[i].getDetectCollision())) {
@@ -215,8 +208,10 @@ public class GameView extends SurfaceView implements Runnable {
 
             if (Rect.intersects(player.getDetectCollision(),bottle.getDetectCollision())) {
                 bottle.setX(-500);
-                score +=100;
+                score +=200;
             }
+
+
     }
     //Here we will draw the characters to the canvas.
     private void draw() {
@@ -224,7 +219,7 @@ public class GameView extends SurfaceView implements Runnable {
         if (surfaceHolder.getSurface().isValid()) {
             //Locking canvas
             canvas = surfaceHolder.lockCanvas();
-            canvas.drawColor(getResources().getColor(R.color.colorBackground));
+            canvas.drawColor(getResources().getColor(R.color.colorGameBackground));
             //Setting the paint color to light gray to draw the dirt
             paint.setColor(Color.LTGRAY);
             //Drawing dirt
@@ -246,8 +241,8 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawText("Score:" + score, canvas.getWidth() / 2 - 60, 50, paint);
 
             //Drawin buttons
-            //pauseButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_pause_white_48dp));
             canvas.drawBitmap(pauseButton.getBitmap(), pauseButton.getX(), pauseButton.getY(), paint);
+            canvas.drawBitmap(muteButton.getBitmap(), muteButton.getX(), muteButton.getY(), paint);
 
             //Draw Game Over
             if (isGameOver) {
@@ -272,7 +267,6 @@ public class GameView extends SurfaceView implements Runnable {
 
     public void pause() {
         playing = false;
-        mediaPlayer.pause();
         //Stopping the gameThread
         try {
             gameThread.join();
@@ -284,7 +278,6 @@ public class GameView extends SurfaceView implements Runnable {
 
     public void resume() {
         playing = true;
-        mediaPlayer.start();
         gameThread = new Thread(this);
         gameThread.start();
     }
@@ -297,16 +290,29 @@ public class GameView extends SurfaceView implements Runnable {
     public boolean onTouchEvent(MotionEvent motionEvent) {
 
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            player.handleActionDown((int)motionEvent.getX());
-            pauseButton.buttonTouch((int)motionEvent.getX(),(int)motionEvent.getY());
-            if (pauseButton.isTouched() && playing) {
+            player.handleActionDown((int) motionEvent.getX());
+
+            Rect rectPause = new Rect(pauseButton.getDetectCollision());
+            if (rectPause.contains((int) motionEvent.getX(), (int) motionEvent.getY()) && playing) {
+                pauseButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_play_arrow_white_48dp));
                 pause();
-            } else if (pauseButton.isTouched() && !playing) {
+            } else if (rectPause.contains((int) motionEvent.getX(), (int) motionEvent.getY()) && !playing) {
                 resume();
+                pauseButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_pause_white_48dp));
+            }
+
+            Rect rectMute = new Rect(muteButton.getDetectCollision());
+            if (rectMute.contains((int) motionEvent.getX(), (int) motionEvent.getY()) && musicPlaying) {
+                mediaPlayer.pause();
+                musicPlaying = false;
+                muteButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_volume_up_white_48dp));
+            } else if (rectMute.contains((int) motionEvent.getX(), (int) motionEvent.getY()) && !musicPlaying) {
+                mediaPlayer.start();
+                musicPlaying = true;
+                muteButton.setBitmap(BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_volume_off_white_48dp));
             }
 
         }
-
         if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             if (player.isTouched()) {
                 player.setX((int) motionEvent.getX());
@@ -317,13 +323,11 @@ public class GameView extends SurfaceView implements Runnable {
             if (player.isTouched()) {
                 player.setTouched(false);
             }
-            if (pauseButton.isTouched()) {
-                pauseButton.setTouched(false);
-            }
         }
 
         if(isGameOver) {
             if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                mediaPlayer.stop();
                 context.startActivity(new Intent(context,MainActivity.class));
             }
         }
