@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">FlappyDrunk</string>
-    <string name="buttonPlay">Play</string>
-    <string name="title_activity_game">GameActivity</string>
-    <string name="title_activity_game_view">GameView</string>
-    <string name="buttonHighScore">High Score</string>
+    <string name="app_name">Wappu Madness</string>
+    <string name="buttonPlay">Start Game</string>
+    <string name="title_activity_game">Wappu Madness</string>
+    <string name="title_activity_game_view">Wappu Madness</string>
+    <string name="buttonHighScore">High Scores</string>
 </resources>

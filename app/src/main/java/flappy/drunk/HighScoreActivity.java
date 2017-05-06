@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.graphics.Typeface;
 
 public class HighScoreActivity extends AppCompatActivity {
 
@@ -23,6 +24,12 @@ public class HighScoreActivity extends AppCompatActivity {
         scoreText4 = (TextView) findViewById(R.id.scoreText4);
 
         sharedPreferences = getSharedPreferences("SHAR_PREF_NAME", Context.MODE_PRIVATE);
+
+        Typeface pixelFont = Typeface.createFromAsset(getAssets(), "Kemco.ttf");
+                scoreText1.setTypeface(pixelFont);
+                scoreText2.setTypeface(pixelFont);
+                scoreText3.setTypeface(pixelFont);
+                scoreText4.setTypeface(pixelFont);
 
         //Values to the textViews
         scoreText1.setText("1. " + sharedPreferences.getInt("score1", 0));
